@@ -1,0 +1,23 @@
+html,
+body,
+#root,
+.App {
+  height: 100%;
+}
+
+.App {
+  text-align: center;
+  height: 100%;
+}
+
+.App-header {
+  text-align: left;
+  padding: 1%;
+  background-color: white;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+
+.App-link {
+  color: #61dafb;
+}
