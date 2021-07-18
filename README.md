@@ -14,7 +14,7 @@ make venv
 
 # Create self-signed certificate for local development
 # and add it as trusted root certificate.
-# Works only for MacA.OS
+# Works only for MacOS.
 make dev/ssl/create
 
 make run
@@ -22,7 +22,7 @@ make run
 
 ### Start the UI
 
-```server
+```shell
 cd client
 npm start
 ```
