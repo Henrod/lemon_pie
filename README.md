@@ -46,4 +46,4 @@ npm start
 
 ## Why LemonPie?
 
-Torta de climão 🍰
+Torta de climão 🍰😭
