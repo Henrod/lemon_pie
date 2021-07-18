@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
+
 from flask_login import UserMixin
 
 
@@ -9,5 +11,5 @@ class User(UserMixin):
     id: str = ""
     name: str = ""
     email: str = ""
-    create_time: datetime = None
-    update_time: datetime = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None

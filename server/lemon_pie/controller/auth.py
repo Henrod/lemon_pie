@@ -9,29 +9,25 @@ def login(
     token: str,
     google_client_id: str,
 ) -> User:
-    print("1")
     idinfo = id_token.verify_oauth2_token(
         token, requests.Request(),
         google_client_id)
 
-    print("2")
     user_id = idinfo["sub"]
     user_email = idinfo["email"]
     user_name = idinfo["given_name"]
     user_surname = idinfo["family_name"]
 
-    print("3")
     user = storage.select_user(user_email=user_email)
     if user is None:
         raise ValueError(f"""user not found in storage:
         id={user_id}, name={user_name}, email={user_email}""")
 
-    print("4")
     user = User(key=f"{user_name}.{user_surname}".lower(),
                 id=user_id,
                 name=user_name,
                 email=user_email)
-    print("5")
+
     storage.update_user(user)
 
     return user

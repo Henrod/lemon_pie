@@ -7,7 +7,7 @@ from flask import Blueprint
 from lemon_pie.models import User
 from lemon_pie.storage.storage import get_storage
 
-app = Blueprint('users', __name__)
+app = Blueprint('users', __name__, url_prefix="/api")
 
 
 @app.route('/users', methods=["GET"])

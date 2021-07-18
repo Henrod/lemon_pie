@@ -1,7 +1,8 @@
 import os
+from lemon_pie import constants
 from typing import Optional
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from flask_login import LoginManager
 
@@ -9,8 +10,11 @@ from lemon_pie.models import User
 from lemon_pie.storage.storage import get_storage
 from . import user, vote, login, emoji
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
+app = Flask(
+    __name__,
+    static_folder="../build/static",
+    template_folder="../build",
+)
 
 app.register_blueprint(user.app)
 app.register_blueprint(vote.app)
@@ -21,7 +25,13 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def init():
+def init(env: str):
+    app.secret_key = (
+        os.environ["SECRET_KEY"]
+        if env == constants.PRODUCTION
+        else os.environ.get("SECRET_KEY", "development-secret")
+    )
+
     app.config['SESSION_COOKIE_SAMESITE'] = "None"
     app.config['SESSION_COOKIE_SECURE'] = "True"
 
@@ -33,3 +43,9 @@ def init():
 def load_user(user_id: str) -> Optional[User]:
     storage = get_storage()
     return storage.select_user(user_id)
+
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def get_ui(path: str) -> str:
+    return render_template('index.html')

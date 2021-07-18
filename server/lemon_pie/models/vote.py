@@ -1,3 +1,4 @@
+from typing import Optional
 from lemon_pie.models.user import User
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -9,5 +10,5 @@ class Vote:
     dst: User
     key: str
     date: date
-    create_time: datetime = None
-    update_time: datetime = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None

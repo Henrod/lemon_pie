@@ -9,7 +9,7 @@ from lemon_pie.storage.storage import get_storage
 
 from .error import ErrorResponse, error_response
 
-app = Blueprint('login', __name__)
+app = Blueprint('login', __name__, url_prefix="/api")
 
 GOOGLE_CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
 
@@ -26,7 +26,7 @@ def login() -> Union[Dict[str, str], ErrorResponse]:
     try:
         user = controller.login(storage, token, GOOGLE_CLIENT_ID)
     except ValueError as e:
-        logger.warning(str(e))
+        logger.warning('failed to login:', str(e))
         return error_response("user not registared in storage", 403)
 
     login_user(user)

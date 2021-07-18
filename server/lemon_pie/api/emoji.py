@@ -1,12 +1,12 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from flask import Blueprint, request
 from lemon_pie.models import Emoji
 from lemon_pie.storage.storage import get_storage
 
-from .error import error_response
+from .error import ErrorResponse, error_response
 
-app = Blueprint('emojis', __name__)
+app = Blueprint('emojis', __name__, url_prefix="/api")
 
 
 @app.route("/emojis")
@@ -18,9 +18,12 @@ def get_emojis() -> Dict[str, List[Emoji]]:
 
 
 @app.route("/emojis", methods=["POST"])
-def insert_emojis() -> Dict[str, List[str]]:
+def insert_emojis() -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
+    if not emoji_dict:
+        return error_response("request body is empty", 400)
+
     try:
         emoji = Emoji(
             key=emoji_dict["key"],
@@ -34,9 +37,12 @@ def insert_emojis() -> Dict[str, List[str]]:
 
 
 @app.route("/emojis", methods=["DELETE"])
-def delete_emoji() -> Dict[str, List[str]]:
+def delete_emoji() -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
+    if not emoji_dict:
+        return error_response("request body is empty", 400)
+
     if "key" not in emoji_dict:
         return error_response("request body must have keys: key", 400)
 

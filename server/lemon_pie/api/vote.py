@@ -10,7 +10,7 @@ from werkzeug.exceptions import BadRequest
 
 from .error import ErrorResponse, error_response
 
-app = Blueprint('votes', __name__)
+app = Blueprint('votes', __name__, url_prefix="/api")
 
 
 @app.route('/votes')

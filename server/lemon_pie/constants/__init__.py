@@ -1,0 +1,2 @@
+PRODUCTION = "production"
+DEVELOPMENT = "development"

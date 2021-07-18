@@ -5,7 +5,7 @@ class Client {
     this.url = process.env.API_URL || "https://localhost:5000";
     this.instance = axios.create({
       withCredentials: true,
-      baseURL: this.url,
+      baseURL: `${this.url}/api`,
     });
   }
 

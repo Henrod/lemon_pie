@@ -4,24 +4,30 @@ import logging
 from dataclasses import dataclass
 from datetime import date
 from lemon_pie.storage.storage import get_storage
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple
 
 from lemon_pie.models.user import User
 from lemon_pie.models.vote import Vote
 from lemon_pie.storage.storage import Storage
 
 
+@dataclass
+class VoteCount:
+    value: str
+    count: int
+
+
 @dataclass(frozen=True)
 class AggVote:
     user: User
-    votes: Dict[str, Dict[str, Union[str, int]]]
+    votes: Dict[str, VoteCount]
 
     @staticmethod
     def new(user: User) -> AggVote:
         return AggVote(
             user=user,
             votes={
-                emoji.key: {"count": 0, "value": emoji.value}
+                emoji.key: VoteCount(value=emoji.value, count=0)
                 for emoji in get_storage().select_emojis()
             },
         )
@@ -42,7 +48,7 @@ def get_votes(storage: Storage, src_key: str = None) -> Dict[str, AggVote]:
 
     for vote in votes:
         if src_key is None or src_key == vote.src.key:
-            agg_votes[vote.dst.key].votes[vote.key]["count"] += 1
+            agg_votes[vote.dst.key].votes[vote.key].count += 1
 
     return agg_votes
 
