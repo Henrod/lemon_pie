@@ -32,7 +32,7 @@ db/migrate:
 .PHONY: lint
 lint:
 	python -m flake8
-	mypy --ignore-missing-imports lemon_pie
+	mypy --ignore-missing-imports .
 
 
 .PHONY: prod/build

@@ -7,7 +7,7 @@ from lemon_pie.storage import storage
 from lemon_pie.storage.postgres import PostgresStorage
 
 
-def init_logger(level: str):
+def init_logger(level: int):
     logger = logging.getLogger("lemon_pie")
     logger.setLevel(logging.getLevelName(level))
     handler = logging.StreamHandler()
