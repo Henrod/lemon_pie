@@ -41,7 +41,6 @@ npm start
 - [ ] SSL connection
 - [ ] Access the API from outside the browser (e.g. curl)
 - [ ] Database migrations
-- [ ] Improve storage files
 - [ ] Local development without login
 - [ ] Automated tests
 
