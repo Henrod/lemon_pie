@@ -16,10 +16,8 @@ def init_logger(level: int):
 
 def arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Lemon Pie')
-    parser.add_argument('--cert', default='.cert/localhost.crt',
-                        help="path to ssl certificate")
-    parser.add_argument('--key', default='.cert/localhost.key',
-                        help="key file when specifying a certificate")
+    parser.add_argument('--cert', help="path to ssl certificate")
+    parser.add_argument('--key', help="key file when specifying a certificate")
     parser.add_argument('--env', default=PRODUCTION,
                         choices=[PRODUCTION, DEVELOPMENT])
     parser.add_argument('--debug', default=False)
@@ -33,5 +31,5 @@ if __name__ == '__main__':
     storage.init_storage(PostgresStorage())
     api.init(args.env)
 
-    ssl_context = (args.cert, args.key)
+    ssl_context = (args.cert, args.key) if args.cert and args.key else None
     api.app.run(debug=args.debug, host='0.0.0.0', ssl_context=ssl_context)

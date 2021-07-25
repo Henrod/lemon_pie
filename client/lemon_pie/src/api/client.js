@@ -2,7 +2,7 @@ const axios = require("axios");
 
 class Client {
   constructor(url) {
-    this.url = process.env.API_URL || "https://localhost:5000";
+    this.url = process.env.REACT_APP_API_URL || "https://localhost:5000";
     this.instance = axios.create({
       withCredentials: true,
       baseURL: `${this.url}/api`,

@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Dict, Union
 
-from flask import request, Blueprint
+from flask import Blueprint, request
 from flask_login import login_user
 from lemon_pie import controller
 from lemon_pie.storage.storage import get_storage
@@ -14,7 +14,7 @@ app = Blueprint('login', __name__, url_prefix="/api")
 GOOGLE_CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
 
 
-@ app.route('/login/callback', methods=["POST"])
+@app.route('/login/callback', methods=["POST"])
 def login() -> Union[Dict[str, str], ErrorResponse]:
     logger = logging.getLogger(__name__)
     storage = get_storage()

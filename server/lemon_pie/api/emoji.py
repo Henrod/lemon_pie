@@ -1,16 +1,19 @@
-from typing import List, Dict, Union
+from typing import Callable, List, Dict, Union
 
 from flask import Blueprint, request
 from lemon_pie.models import Emoji
 from lemon_pie.storage.storage import get_storage
 
 from .error import ErrorResponse, error_response
+from .login_utils import login_required
 
 app = Blueprint('emojis', __name__, url_prefix="/api")
 
 
+# TODO: protect this routes with adm
 @app.route("/emojis")
-def get_emojis() -> Dict[str, List[Emoji]]:
+@login_required
+def get_emojis(current_user: Callable) -> Dict[str, List[Emoji]]:
     storage = get_storage()
     emojis = storage.select_emojis()
     emojis = sorted(emojis, key=lambda e: e.key)
@@ -18,7 +21,8 @@ def get_emojis() -> Dict[str, List[Emoji]]:
 
 
 @app.route("/emojis", methods=["POST"])
-def insert_emojis() -> Union[Dict[str, List[str]], ErrorResponse]:
+@login_required
+def insert_emojis(current_user: Callable) -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
     if not emoji_dict:
@@ -37,7 +41,8 @@ def insert_emojis() -> Union[Dict[str, List[str]], ErrorResponse]:
 
 
 @app.route("/emojis", methods=["DELETE"])
-def delete_emoji() -> Union[Dict[str, List[str]], ErrorResponse]:
+@login_required
+def delete_emoji(current_user: Callable) -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
     if not emoji_dict:
