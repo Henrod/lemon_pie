@@ -41,7 +41,7 @@ npm start
 - [ ] SSL connection
 - [ ] Access the API from outside the browser (e.g. curl)
 - [ ] Database migrations
-- [ ] Local development without login
+- [x] Local development without login
 - [ ] Automated tests
 
 ## Why LemonPie?
