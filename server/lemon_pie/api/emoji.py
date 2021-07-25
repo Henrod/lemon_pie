@@ -22,7 +22,9 @@ def get_emojis(current_user: Callable) -> Dict[str, List[Emoji]]:
 
 @app.route("/emojis", methods=["POST"])
 @login_required
-def insert_emojis(current_user: Callable) -> Union[Dict[str, List[str]], ErrorResponse]:
+def insert_emojis(
+    current_user: Callable,
+) -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
     if not emoji_dict:
@@ -42,7 +44,9 @@ def insert_emojis(current_user: Callable) -> Union[Dict[str, List[str]], ErrorRe
 
 @app.route("/emojis", methods=["DELETE"])
 @login_required
-def delete_emoji(current_user: Callable) -> Union[Dict[str, List[str]], ErrorResponse]:
+def delete_emoji(
+    current_user: Callable,
+) -> Union[Dict[str, List[str]], ErrorResponse]:
     storage = get_storage()
     emoji_dict = request.get_json()
     if not emoji_dict:

@@ -2,10 +2,21 @@ const axios = require("axios");
 
 class Client {
   constructor(url) {
-    this.url = process.env.REACT_APP_API_URL || "https://localhost:5000";
+    this.url = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const auth =
+      process.env.REACT_APP_ENVIRONMENT === "production"
+        ? {}
+        : {
+            auth: {
+              username: process.env.REACT_APP_API_USERNAME,
+              password: process.env.REACT_APP_API_PASSWORD,
+            },
+          };
+
     this.instance = axios.create({
       withCredentials: true,
       baseURL: `${this.url}/api`,
+      ...auth,
     });
   }
 

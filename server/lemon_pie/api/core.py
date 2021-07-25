@@ -34,7 +34,7 @@ def init(env: str):
         app.config["SESSION_COOKIE_SAMESITE"] = "None"
         app.config["SESSION_COOKIE_SECURE"] = "True"
     else:
-        origins = ["http://localhost:3000"]
+        origins = ["*"]
         app.secret_key = "development-secret"
         app.config["LOGIN_DISABLED"] = True
 
