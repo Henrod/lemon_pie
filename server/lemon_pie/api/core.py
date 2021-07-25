@@ -1,4 +1,5 @@
 import os
+from datetime import time
 from typing import Optional
 
 from flask import Flask, render_template
@@ -8,7 +9,7 @@ from lemon_pie import constants
 from lemon_pie.models import User
 from lemon_pie.storage.storage import get_storage
 
-from . import emoji, login, user, vote, login_utils
+from . import emoji, login, login_utils, user, vote
 
 app = Flask(
     __name__,
@@ -25,8 +26,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def init(env: str):
+def init(env: str, end_vote_time: time):
     login_utils.init(env)
+    vote.init(end_vote_time)
 
     if env == constants.PRODUCTION:
         origins = os.environ["LEMON_PIE_CORS_ORIGINS"].split(",")

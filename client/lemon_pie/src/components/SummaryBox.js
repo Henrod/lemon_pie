@@ -21,8 +21,6 @@ const useStyles = makeStyles((theme) => ({
 const SummaryBox = ({ user, votes }) => {
   const classes = useStyles();
 
-  console.log(votes);
-
   return (
     <Paper key={user.key} className={classes.paper}>
       <Typography variant="h4">{user.name}</Typography>

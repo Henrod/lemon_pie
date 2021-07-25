@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VotesBox = ({ user, vote, handleClick, validEmojis }) => {
+const VotesBox = ({ user, vote, handleClick, validEmojis, canVote }) => {
   const classes = useStyles();
   const getColor = (key) => (key === vote ? "primary" : "default");
   const getVariant = (key) => (key === vote ? "contained" : "text");
@@ -36,6 +36,7 @@ const VotesBox = ({ user, vote, handleClick, validEmojis }) => {
               color={getColor(key)}
               variant={getVariant(key)}
               fullWidth
+              disabled={!canVote}
             >
               {`${value}`}
             </Button>

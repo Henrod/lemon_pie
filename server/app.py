@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 import logging
 
 from lemon_pie import api
@@ -20,6 +21,7 @@ def arguments() -> argparse.Namespace:
     parser.add_argument('--key', help="key file when specifying a certificate")
     parser.add_argument('--env', default=PRODUCTION,
                         choices=[PRODUCTION, DEVELOPMENT])
+    parser.add_argument('--end_vote_time', default="15:00", type=str)
     parser.add_argument('--debug', default=False)
     return parser.parse_args()
 
@@ -29,7 +31,11 @@ if __name__ == '__main__':
 
     init_logger(logging.DEBUG)
     storage.init_storage(PostgresStorage())
-    api.init(args.env)
+
+    api.init(
+        env=args.env,
+        end_vote_time=datetime.strptime(args.end_vote_time, "%H:%M").time(),
+    )
 
     ssl_context = (args.cert, args.key) if args.cert and args.key else None
     api.app.run(debug=args.debug, host='0.0.0.0', ssl_context=ssl_context)

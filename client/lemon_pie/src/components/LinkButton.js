@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   linkButton: {
@@ -15,24 +15,23 @@ const useStyles = makeStyles((theme) => ({
 
 const LinkButton = (props) => {
   const classes = useStyles();
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push(props.to);
+  };
 
   return (
-    <Link
-      to={props.to}
-      style={{
-        textDecoration: "none",
-        ...props.style,
-      }}
+    <Button
+      variant="contained"
+      color="primary"
+      size="large"
+      className={classes.linkButton}
+      disabled={!props.canVote}
+      onClick={handleClick}
     >
-      <Button
-        variant="contained"
-        color="primary"
-        size="large"
-        className={classes.linkButton}
-      >
-        {props.text}
-      </Button>
-    </Link>
+      {props.text}
+    </Button>
   );
 };
 

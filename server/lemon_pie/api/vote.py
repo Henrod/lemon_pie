@@ -1,5 +1,6 @@
 import logging
-from typing import Dict, Union, Callable
+from datetime import time
+from typing import Callable, Dict, Union
 
 from flask import Blueprint, request
 from lemon_pie import controller
@@ -12,14 +13,21 @@ from .login_utils import login_required
 
 app = Blueprint('votes', __name__, url_prefix="/api")
 
+_end_vote_time = time(hour=12)
+
+
+def init(end_vote_time: time) -> None:
+    global _end_vote_time
+    _end_vote_time = end_vote_time
+
 
 @app.route('/votes')
 @login_required
-def get_votes(current_user: Callable) -> Dict[str, AggVote]:
+def get_votes(current_user: Callable) -> Dict:
     storage = get_storage()
     logger = logging.getLogger(__name__)
     logger.info(f"getting votes for {current_user}")
-    return controller.get_votes(storage)
+    return controller.get_votes(storage, _end_vote_time)
 
 
 @app.route('/users/<user>/votes')
@@ -28,7 +36,7 @@ def get_user_votes(user: str, current_user: Callable) -> Dict[str, AggVote]:
     storage = get_storage()
     logger = logging.getLogger(__name__)
     logger.info(f"getting votes for {current_user()}")
-    return controller.get_votes(storage, user)
+    return controller.get_votes(storage, _end_vote_time, user)
 
 
 @app.route('/votes', methods=["PUT"])

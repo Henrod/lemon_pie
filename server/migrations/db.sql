@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS users (
     key TEXT NOT NULL,
     email TEXT,
     name TEXT NOT NULL,
-    create_time DATETIME NOT NULL,
-    update_time DATETIME NOT NULL
+    create_time TIMESTAMP NOT NULL,
+    update_time TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS votes (
@@ -14,13 +14,13 @@ CREATE TABLE IF NOT EXISTS votes (
     dst_user_key TEXT NOT NULL,
     key TEXT NOT NULL,
     date DATE NOT NULL,
-    create_time DATETIME NOT NULL,
-    update_time DATETIME NOT NULL
+    create_time TIMESTAMP NOT NULL,
+    update_time TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS emojis (
     key TEXT NOT NULL UNIQUE,
     value TEXT NOT NULL UNIQUE,
-    create_time DATETIME NOT NULL,
-    update_time DATETIME NOT NULL
+    create_time TIMESTAMP NOT NULL,
+    update_time TIMESTAMP NOT NULL
 );

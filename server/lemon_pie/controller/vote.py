@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
-from datetime import date
+from dataclasses import asdict, dataclass
+from datetime import date, datetime, time, timezone
 from lemon_pie.storage.storage import get_storage
 from typing import Dict, List, Optional, Tuple
 
@@ -33,7 +33,21 @@ class AggVote:
         )
 
 
-def get_votes(storage: Storage, src_key: str = None) -> Dict[str, AggVote]:
+@dataclass
+class Votes:
+    votes: Dict[str, AggVote]
+    can_vote: bool
+
+
+def can_vote(end_vote_time: time) -> bool:
+    return datetime.now().time() < end_vote_time
+
+
+def get_votes(
+    storage: Storage,
+    end_vote_time: time,
+    src_key: str = None,
+) -> Dict:
     today = date.today()
     users = storage.select_users()
 
@@ -50,7 +64,10 @@ def get_votes(storage: Storage, src_key: str = None) -> Dict[str, AggVote]:
         if src_key is None or src_key == vote.src.key:
             agg_votes[vote.dst.key].votes[vote.key].count += 1
 
-    return agg_votes
+    return asdict(Votes(
+        votes=agg_votes,
+        can_vote=can_vote(end_vote_time),
+    ))
 
 
 def _is_invalid(cases: List[Tuple[bool, str]]) -> Optional[str]:

@@ -23,6 +23,7 @@ const Summary = () => {
     votes: {},
     users: {},
     isLogged: true,
+    canVote: false,
   });
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const Summary = () => {
 
         const votesState = {};
         const usersState = {};
-        for (let [user, data] of Object.entries(votes.data)) {
+        for (let [user, data] of Object.entries(votes.data.votes)) {
           votesState[user] = {};
           usersState[user] = data.user;
           for (let [key, count] of Object.entries(data.votes)) {
@@ -45,6 +46,7 @@ const Summary = () => {
           ...state,
           votes: votesState,
           users: usersState,
+          canVote: votes.data.can_vote,
         }));
       } catch (error) {
         console.log("failed to fetch from api", error);
@@ -59,7 +61,7 @@ const Summary = () => {
     <ThemeProvider theme={theme}>
       <TopBar />
       {redirectComponent(state)}
-      <LinkButton to="/votes" text="Votar" />
+      <LinkButton to="/votes" text="Votar" canVote={state.canVote} />
       <Grid container className={classes.gridContainer}>
         {Object.keys(state.votes).map((user) => (
           <Grid
