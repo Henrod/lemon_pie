@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import logging
 from dataclasses import asdict, dataclass
-from datetime import date, datetime, time, timezone
+from datetime import date, datetime, time
 from lemon_pie.storage.storage import get_storage
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 from lemon_pie.models.user import User
 from lemon_pie.models.vote import Vote
@@ -21,15 +21,17 @@ class VoteCount:
 class AggVote:
     user: User
     votes: Dict[str, VoteCount]
+    is_counting: bool
 
     @staticmethod
-    def new(user: User) -> AggVote:
+    def new(user: User, is_counting: bool) -> AggVote:
         return AggVote(
             user=user,
             votes={
                 emoji.key: VoteCount(value=emoji.value, count=0)
                 for emoji in get_storage().select_emojis()
             },
+            is_counting=is_counting,
         )
 
 
@@ -51,17 +53,26 @@ def get_votes(
     today = date.today()
     users = storage.select_users()
 
-    agg_votes: Dict[str, AggVote] = {
-        user.key: AggVote.new(User(key=user.key, name=user.name))
-        for user in users
-        if src_key != user.key
-    }
-
     votes = storage.select_votes(today)
     votes = sorted(votes, key=lambda vote: vote.key)
 
+    valid_src_users: Set[User] = set()
+    users_set = set(User(key=user.key) for user in users)
+    for user in users:
+        user_votes = set(vote.dst for vote in votes if vote.src == user)
+        if user_votes == users_set - {user}:
+            valid_src_users.add(user)
+
+    agg_votes: Dict[str, AggVote] = {
+        user.key: AggVote.new(
+            User(key=user.key, name=user.name),
+            is_counting=(user in valid_src_users)
+        ) for user in users if src_key != user.key
+    }
+
     for vote in votes:
-        if src_key is None or src_key == vote.src.key:
+        if (src_key is None and vote.src in valid_src_users) \
+                or src_key == vote.src.key:
             agg_votes[vote.dst.key].votes[vote.key].count += 1
 
     return asdict(Votes(

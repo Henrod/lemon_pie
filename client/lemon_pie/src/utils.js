@@ -1,7 +1,4 @@
-const Male = 'male'
-const Female = 'female'
+const Male = "male";
+const Female = "female";
 
-export {
-    Male,
-    Female,
-}
+export { Male, Female };

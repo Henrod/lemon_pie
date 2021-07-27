@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Client from "../api/client";
-import { Grid, ThemeProvider, createMuiTheme } from "@material-ui/core";
+import {
+  Grid,
+  ThemeProvider,
+  createMuiTheme,
+  Box,
+  Typography,
+} from "@material-ui/core";
 import { VotesBox, TopBar, LinkButton } from "../components";
 import { redirectComponent, loginState } from "../api/login";
+import { translatedText } from "../translation";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -27,7 +34,13 @@ const Vote = () => {
     user: {},
     validEmojis: [],
     canVote: false,
+    isCounting: true,
   });
+
+  const isCounting = (state) => {
+    console.log(Object.values(state.votes).map((dstUser) => dstUser !== "___"));
+    return Object.values(state.votes).every((dstUser) => dstUser !== "___");
+  };
 
   useEffect(() => {
     const client = new Client();
@@ -51,14 +64,18 @@ const Vote = () => {
         }
 
         const validEmojis = (await client.getValidEmojis()).data["emojis"];
-
-        setState((state) => ({
-          ...state,
+        const newState = {
           user: { key: user_key },
           votes: votesState,
           users: usersState,
           validEmojis: validEmojis,
           canVote: votes.data.can_vote,
+        };
+
+        setState((state) => ({
+          ...state,
+          ...newState,
+          isCounting: isCounting(newState),
         }));
       } catch (error) {
         console.log("failed to fetch from api", error);
@@ -74,10 +91,15 @@ const Vote = () => {
     const setVote = async () => await client.setVote(vote, dst);
     const prevVote = state.votes[dst];
     try {
-      setState({
+      const currVotes = { ...state.votes, [dst]: vote };
+      const newState = {
         ...state,
-        votes: { ...state.votes, [dst]: vote },
+        votes: currVotes,
         users: { ...state.users },
+      };
+      setState({
+        ...newState,
+        isCounting: isCounting(newState),
       });
       setVote();
     } catch (error) {
@@ -94,7 +116,14 @@ const Vote = () => {
   return (
     <ThemeProvider theme={theme}>
       <TopBar />
-      <LinkButton to="/" text="Home" canVote={state.canVote}></LinkButton>
+      <Box display="flex" alignItems="center">
+        <LinkButton to="/" text="Home" canVote={state.canVote}></LinkButton>
+        {!state.isCounting && (
+          <Typography variant="h5" color="error">
+            {translatedText("Vote.missing")}
+          </Typography>
+        )}
+      </Box>
       {redirectComponent(state)}
       <Grid container className={classes.gridContainer}>
         {Object.keys(state.votes)
