@@ -1,6 +1,6 @@
 import { Grid, Paper, Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import nick from "../assets/nick.jpeg";
+import ProfilePhoto from "./ProfilePhoto";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,7 +33,7 @@ const SummaryBox = ({ user, votes }) => {
   return (
     <Paper key={user.key} className={classes.paper}>
       <Box display="flex" alignItems="center" justifyContent="center">
-        <img src={nick} alt="profile" className={classes.photo} />
+        <ProfilePhoto user={user} />
         <Box width="100%">
           <Typography variant="h4" className={classes.profileName}>
             {user.name}

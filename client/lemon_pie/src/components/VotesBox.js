@@ -1,5 +1,6 @@
-import { Grid, Button, Paper, Typography } from "@material-ui/core";
+import { Grid, Button, Paper, Typography, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import ProfilePhoto from "./ProfilePhoto";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -25,7 +26,14 @@ const VotesBox = ({ user, vote, handleClick, validEmojis, canVote }) => {
 
   return (
     <Paper key={user.key} className={classes.paper}>
-      <Typography variant="h4">{user.name}</Typography>
+      <Box display="flex" alignItems="center" justifyContent="center">
+        <ProfilePhoto user={user} />
+        <Box width="100%">
+          <Typography variant="h4" className={classes.profileName}>
+            {user.name}
+          </Typography>
+        </Box>
+      </Box>
       <Grid container key={user.key} className={classes.gridContainer}>
         {validEmojis.map(({ key, value }) => (
           <Grid key={key} item lg={3} md={4} sm={6} xs={12}>

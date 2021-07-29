@@ -26,7 +26,7 @@ def init(end_vote_time: time) -> None:
 def get_votes(current_user: Callable) -> Dict:
     storage = get_storage()
     logger = logging.getLogger(__name__)
-    logger.info(f"getting votes for {current_user}")
+    logger.info(f"getting votes for {current_user()}")
     return controller.get_votes(storage, _end_vote_time)
 
 
@@ -54,7 +54,7 @@ def put_vote(
             raise ValueError("invalid request body")
 
         vote_dict["src"] = {"key": current_user()}
-        response = controller.put_vote(storage, vote_dict)
+        response = controller.put_vote(storage, _end_vote_time, vote_dict)
     except (BadRequest, ValueError) as e:
         return error_response(str(e), 400)
 

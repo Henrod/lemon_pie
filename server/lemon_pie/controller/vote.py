@@ -88,7 +88,11 @@ def _is_invalid(cases: List[Tuple[bool, str]]) -> Optional[str]:
     return None
 
 
-def put_vote(storage: Storage, vote_dict: dict) -> Dict[str, AggVote]:
+def put_vote(
+    storage: Storage,
+    end_vote_time: time,
+    vote_dict: dict,
+) -> Dict[str, AggVote]:
     logger = logging.getLogger(__name__)
 
     src_user_key = vote_dict.get("src", {}).get("key")
@@ -119,4 +123,4 @@ def put_vote(storage: Storage, vote_dict: dict) -> Dict[str, AggVote]:
     storage.delete_vote((vote.date, vote.src.key, vote.dst.key))
     storage.insert_vote(vote)
 
-    return get_votes(storage, vote.src)
+    return get_votes(storage, end_vote_time, vote.src)
