@@ -35,7 +35,7 @@ const SummaryBox = ({ user, votes }) => {
       <Box display="flex" alignItems="center" justifyContent="center">
         <ProfilePhoto user={user} />
         <Box width="100%">
-          <Typography variant="h4" className={classes.profileName}>
+          <Typography variant="h3" className={classes.profileName}>
             {user.name}
           </Typography>
         </Box>

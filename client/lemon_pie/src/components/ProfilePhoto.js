@@ -2,9 +2,11 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   photo: {
-    height: "100px",
-    width: "100px",
+    height: undefined,
+    width: "200px",
+    aspectRatio: "1",
     marginLeft: theme.spacing(12),
+    marginBottom: theme.spacing(2),
   },
 }));
 
