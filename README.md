@@ -1,6 +1,6 @@
 # LemonPie
 
-![lint](https://github.com/Henrod/lemon_pie/actions/workflows/server.yml/badge.svg?branch=master)
+![lint](https://github.com/Henrod/lemon_pie/actions/workflows/server.yml/badge.svg)
 
 Judge your friends using emojis 😈
 
