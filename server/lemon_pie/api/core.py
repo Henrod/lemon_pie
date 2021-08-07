@@ -44,7 +44,7 @@ def init(env: str, end_vote_time: time) -> None:
 
 
 @login_manager.user_loader
-def load_user(user_id: str) -> Optional[User]:
+def load_user(user_id: str) -> Optional[str]:
     storage = get_storage()
     return storage.select_user(user_id=user_id)
 
