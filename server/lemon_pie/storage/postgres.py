@@ -1,12 +1,13 @@
-from dataclasses import is_dataclass
+from __future__ import annotations
+
 import logging
 import os
 from datetime import date
-from lemon_pie.models.configs import Configs
-from typing import Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 import psycopg2
-from lemon_pie.models import User, Vote, Emoji
+from lemon_pie.models import Emoji, User, Vote
+from lemon_pie.models.configs import Configs
 from lemon_pie.storage.storage import Storage
 from psycopg2.extensions import cursor as pgcursor
 from psycopg2.extras import LoggingConnection
@@ -17,14 +18,18 @@ _DATABASE_URL = os.environ.get(
 
 
 def cursor(func: Callable) -> Callable:
-    def with_cursor(self, *args, **kwargs):
+    def with_cursor(
+        self: PostgresStorage,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Callable:
         with self.conn, self.conn.cursor() as cur:
             return func(self, cur, *args, **kwargs)
     return with_cursor
 
 
 class PostgresStorage(Storage):
-    def __init__(self):
+    def __init__(self) -> None:
         logger = logging.getLogger(__name__)
         self.conn = psycopg2.connect(
             _DATABASE_URL,

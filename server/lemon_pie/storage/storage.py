@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import date
 from typing import List, Optional, Tuple
 
-from lemon_pie.models import Emoji, User, Vote, Configs
+from lemon_pie.models import Configs, Emoji, User, Vote
 
 
 class Storage(ABC):
@@ -59,7 +59,7 @@ class Storage(ABC):
 _storage: Storage
 
 
-def init_storage(storage: Storage) -> None:
+def init(storage: Storage) -> None:
     global _storage
     _storage = storage
 

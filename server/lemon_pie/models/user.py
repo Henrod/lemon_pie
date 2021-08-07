@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -15,7 +17,7 @@ class User(UserMixin):
     create_time: Optional[datetime] = None
     update_time: Optional[datetime] = None
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: UserMixin) -> bool:
         return (
             type(other) == User
             and self.key == other.key

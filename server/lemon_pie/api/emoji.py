@@ -1,4 +1,4 @@
-from typing import Callable, List, Dict, Union
+from typing import Callable, Dict, List, Union
 
 from flask import Blueprint, request
 from lemon_pie.models import Emoji

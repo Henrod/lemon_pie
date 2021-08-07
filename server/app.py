@@ -1,18 +1,11 @@
 import argparse
-from datetime import datetime
 import logging
+from datetime import datetime
 
-from lemon_pie import api
-from lemon_pie.constants import PRODUCTION, DEVELOPMENT
+from lemon_pie import api, logger
+from lemon_pie.constants import DEVELOPMENT, PRODUCTION
 from lemon_pie.storage import storage
 from lemon_pie.storage.postgres import PostgresStorage
-
-
-def init_logger(level: int):
-    logger = logging.getLogger("lemon_pie")
-    logger.setLevel(logging.getLevelName(level))
-    handler = logging.StreamHandler()
-    logger.addHandler(handler)
 
 
 def arguments() -> argparse.Namespace:
@@ -29,8 +22,8 @@ def arguments() -> argparse.Namespace:
 if __name__ == '__main__':
     args = arguments()
 
-    init_logger(logging.DEBUG)
-    storage.init_storage(PostgresStorage())
+    logger.init(logging.DEBUG)
+    storage.init(PostgresStorage())
 
     api.init(
         env=args.env,

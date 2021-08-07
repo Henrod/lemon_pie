@@ -3,12 +3,11 @@ from __future__ import annotations
 import logging
 from dataclasses import asdict, dataclass
 from datetime import date, datetime, time
-from lemon_pie.storage.storage import get_storage
 from typing import Dict, List, Optional, Set, Tuple
 
 from lemon_pie.models.user import User
 from lemon_pie.models.vote import Vote
-from lemon_pie.storage.storage import Storage
+from lemon_pie.storage.storage import Storage, get_storage
 
 
 @dataclass
