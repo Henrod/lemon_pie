@@ -28,4 +28,5 @@ jobs:
           pipenv install --dev --system
       - name: Lint
         run: |
+          cd server
           make lint
