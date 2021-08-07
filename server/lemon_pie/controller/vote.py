@@ -98,7 +98,7 @@ def _valid_users(
     users_set = set(User(key=user.key) for user in users)
     for user in users:
         user_votes = set(vote.dst for vote in votes if vote.src == user)
-        if user_votes == users_set - {user}:
+        if user_votes.issuperset(users_set - {user}):
             valid_src_users.add(user)
 
     return valid_src_users
@@ -119,8 +119,10 @@ def _get_agg_votes(
     }
 
     for vote in votes:
-        if (src_key is None and vote.src in valid_src_users) \
-                or src_key == vote.src.key:
+        is_valid_src = src_key is None and vote.src in valid_src_users
+        is_vote_src = src_key == vote.src.key
+        is_valid_dst = vote.dst.key in agg_votes
+        if (is_valid_src or is_vote_src) and is_valid_dst:
             agg_votes[vote.dst.key].votes[vote.key].count += 1
 
     return agg_votes
@@ -132,8 +134,6 @@ def get_votes(
     should_total: bool = False,
     src_key: str = None,
 ) -> Dict:
-    users = storage.select_users()
-
     if should_total:
         votes: Dict[date, List[Vote]] = {}
         for vote in storage.select_votes():
@@ -147,6 +147,7 @@ def get_votes(
         votes = {today: storage.select_votes_date(today)}
         start_date, end_date = today, today
 
+    users = storage.select_users()
     total_agg_votes: Dict[str, AggVote] = {
         user.key: AggVote.new(
             User(key=user.key, name=user.name),

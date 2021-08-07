@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT,
     name TEXT NOT NULL,
     is_admin BOOL NOT NULL,
+    is_playing BOOL NOT NULL,
     create_time TIMESTAMP NOT NULL,
     update_time TIMESTAMP NOT NULL
 );
