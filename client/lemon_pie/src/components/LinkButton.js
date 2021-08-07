@@ -1,11 +1,10 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
 import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   linkButton: {
-    color: theme.palette.common.white,
     margin: theme.spacing(4),
     height: theme.spacing(10),
     width: theme.spacing(20),
@@ -25,6 +24,7 @@ const LinkButton = ({ to, text, disabled = false }) => {
     <Button
       variant="contained"
       color="primary"
+      style={{ color: "white" }}
       size="large"
       className={classes.linkButton}
       disabled={disabled}
