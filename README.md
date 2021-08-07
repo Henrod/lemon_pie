@@ -13,19 +13,13 @@ cd server
 
 # Start virtual environment
 make venv
-
-# Create self-signed certificate for local development
-# and add it as trusted root certificate.
-# Works only for MacOS.
-make dev/ssl/create
-
-make run
+make dev/run
 ```
 
 ### Start the UI
 
 ```shell
-cd client
+cd client/lemon_pie
 npm start
 ```
 
@@ -33,9 +27,9 @@ npm start
 
 ### Product
 
-- [ ] Enable voting depending on the time of the day
-- [ ] Custom emojis - changeble from an endpoint
-- [ ] Force voting in everyone or no one
+- [x] Enable voting depending on the time of the day
+- [x] Custom emojis - changeble from an endpoint
+- [x] Force voting in everyone or no one
 - [ ] "How it works" page
 
 ### Technical
