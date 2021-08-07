@@ -23,8 +23,8 @@ def login_required(f: Callable) -> Callable:
     basic_auth = HTTPBasicAuth()
     basic_auth.verify_password(verify_basic_auth)
 
-    @ functools.wraps(f)
-    def decorator(*args, **kwargs):
+    @functools.wraps(f)
+    def decorator(*args, **kwargs) -> None:
         _f = {
             constants.PRODUCTION: flask_login.login_required(f),
             constants.DEVELOPMENT: basic_auth.login_required(f),

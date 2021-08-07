@@ -1,6 +1,8 @@
+from dataclasses import is_dataclass
 import logging
 import os
 from datetime import date
+from lemon_pie.models.configs import Configs
 from typing import Callable, List, Optional, Tuple
 
 import psycopg2
@@ -30,12 +32,29 @@ class PostgresStorage(Storage):
         self.conn.initialize(logger)
 
     @cursor
-    def select_votes(self, cur: pgcursor, date: date) -> List[Vote]:
+    def select_votes_date(self, cur: pgcursor, date: date) -> List[Vote]:
         cur.execute(
             """
             SELECT src_user_key, dst_user_key, key, date
             FROM votes WHERE date = %s
             """, (date,)
+        )
+        return [
+            Vote(
+                src=User(key=src),
+                dst=User(key=dst),
+                key=value,
+                date=date,
+            ) for (src, dst, value, date) in cur.fetchall()
+        ]
+
+    @cursor
+    def select_votes(self, cur: pgcursor) -> List[Vote]:
+        cur.execute(
+            """
+            SELECT src_user_key, dst_user_key, key, date
+            FROM votes
+            """,
         )
         return [
             Vote(
@@ -88,21 +107,23 @@ class PostgresStorage(Storage):
         cur: pgcursor,
         user_id: str = None,
         user_email: str = None,
+        user_key: str = None,
     ) -> Optional[User]:
         cur.execute(
             """
-            SELECT id, key, name, email
+            SELECT id, key, name, email, is_admin
             FROM users
-            WHERE id = %s or email = %s
+            WHERE id = %s or email = %s or key = %s
             """,
-            (user_id, user_email)
+            (user_id, user_email, user_key)
         )
-        user = cur.fetchone()
-        return user and User(
-            id=user[0],
-            key=user[1],
-            name=user[2],
-            email=user[3],
+        (id, key, name, email, is_admin) = cur.fetchone()
+        return id and User(
+            id=id,
+            key=key,
+            name=name,
+            email=email,
+            is_admin=is_admin
         )
 
     @cursor
@@ -150,3 +171,16 @@ class PostgresStorage(Storage):
                 update_time=update_time
             ) for (key, value, create_time, update_time) in cur.fetchall()
         ]
+
+    @cursor
+    def select_configs(self, cur: pgcursor) -> Configs:
+        cur.execute(
+            """
+            SELECT is_total_enabled FROM configs
+            """
+        )
+        (is_total_enabled,) = cur.fetchone()
+
+        return Configs(
+            is_total_enabled=is_total_enabled,
+        )

@@ -6,7 +6,8 @@ venv:
 dev/run:
 	python app.py \
 	--env development \
-	--debug true
+	--debug true \
+	--end_vote_time 23:59
 
 .PHONY: prod/run
 prod/run:
@@ -28,7 +29,7 @@ db/migrate:
 .PHONY: lint
 lint:
 	python -m flake8
-	mypy --ignore-missing-imports .
+	mypy --ignore-missing-imports --disallow-untyped-defs .
 
 
 .PHONY: prod/build

@@ -117,9 +117,13 @@ const Vote = () => {
     <ThemeProvider theme={theme}>
       <TopBar />
       <Box display="flex" alignItems="center">
-        <LinkButton to="/" text="Home" canVote={state.canVote}></LinkButton>
+        <LinkButton
+          to="/"
+          text={translatedText("Vote.summary")}
+          canVote={state.canVote}
+        ></LinkButton>
         {!state.isCounting && (
-          <Typography variant="h5" color="error">
+          <Typography variant="h4" color="error">
             {translatedText("Vote.missing")}
           </Typography>
         )}

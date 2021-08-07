@@ -13,12 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LinkButton = (props) => {
+const LinkButton = ({ to, text, disabled = false }) => {
   const classes = useStyles();
   const history = useHistory();
 
   const handleClick = () => {
-    history.push(props.to);
+    history.push(to);
   };
 
   return (
@@ -27,10 +27,10 @@ const LinkButton = (props) => {
       color="primary"
       size="large"
       className={classes.linkButton}
-      disabled={!props.canVote}
+      disabled={disabled}
       onClick={handleClick}
     >
-      {props.text}
+      {text}
     </Button>
   );
 };

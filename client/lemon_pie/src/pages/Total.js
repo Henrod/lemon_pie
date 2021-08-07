@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import Client from "../api/client";
 import { makeStyles } from "@material-ui/core/styles";
 import { TopBar, SummaryBox, LinkButton } from "../components";
-import { ThemeProvider, createMuiTheme, Grid } from "@material-ui/core";
+import {
+  ThemeProvider,
+  createMuiTheme,
+  Grid,
+  Typography,
+  Box,
+} from "@material-ui/core";
 import { redirectComponent, loginState } from "../api/login";
 import { translatedText } from "../translation";
 
@@ -23,21 +29,20 @@ const Summary = () => {
   const [state, setState] = useState({
     votes: {},
     users: {},
+    startDate: null,
+    endDate: null,
     isLogged: true,
-    canVote: false,
-    isTotalEnabled: false,
   });
 
   useEffect(() => {
     const client = new Client();
     const getVotes = async () => {
       try {
-        const votes = await client.getVotes();
-        const total = await client.getIsTotalEnabled();
+        const votes = await client.getTotalVotes();
 
         const votesState = {};
         const usersState = {};
-        for (let [user, data] of Object.entries(votes.data.votes)) {
+        for (let [user, data] of Object.entries(votes.data.total.votes)) {
           votesState[user] = {};
           usersState[user] = data.user;
           for (let [key, count] of Object.entries(data.votes)) {
@@ -49,8 +54,8 @@ const Summary = () => {
           ...state,
           votes: votesState,
           users: usersState,
-          canVote: votes.data.can_vote,
-          isTotalEnabled: total.data.is_enabled,
+          startDate: votes.data.total.start_date,
+          endDate: votes.data.total.end_date,
         }));
       } catch (error) {
         console.log("failed to fetch from api", error);
@@ -65,16 +70,12 @@ const Summary = () => {
     <ThemeProvider theme={theme}>
       <TopBar />
       {redirectComponent(state)}
-      <LinkButton
-        to="/votes"
-        text={translatedText("Summary.vote")}
-        disabled={!state.canVote}
-      />
-      <LinkButton
-        to="/total"
-        text={translatedText("Summary.total")}
-        disabled={!state.isTotalEnabled}
-      />
+      <Box display="flex" alignItems="center">
+        <LinkButton to="/" text={translatedText("Total.summary")} />
+        <Typography variant="h4">
+          {state.startDate} - {state.endDate}
+        </Typography>
+      </Box>
       <Grid container className={classes.gridContainer}>
         {Object.keys(state.votes).map((user) => (
           <Grid

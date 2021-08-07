@@ -1,5 +1,5 @@
 import "./App.css";
-import { Vote, NotFound, Summary, Login } from "./pages";
+import { Vote, NotFound, Summary, Login, Total } from "./pages";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
@@ -32,6 +32,10 @@ function App() {
     {
       path: "/login",
       page: <Login />,
+    },
+    {
+      path: "/total",
+      page: <Total />,
     },
   ]);
 }

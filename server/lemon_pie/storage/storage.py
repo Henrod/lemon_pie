@@ -2,12 +2,16 @@ from abc import ABC, abstractmethod
 from datetime import date
 from typing import List, Optional, Tuple
 
-from lemon_pie.models import Emoji, User, Vote
+from lemon_pie.models import Emoji, User, Vote, Configs
 
 
 class Storage(ABC):
     @abstractmethod
-    def select_votes(self, date: date) -> List[Vote]:
+    def select_votes(self) -> List[Vote]:
+        pass
+
+    @abstractmethod
+    def select_votes_date(self, date: date) -> List[Vote]:
         pass
 
     @abstractmethod
@@ -27,6 +31,7 @@ class Storage(ABC):
         self,
         user_id: str = None,
         user_email: str = None,
+        user_key: str = None,
     ) -> Optional[User]:
         pass
 
@@ -44,6 +49,10 @@ class Storage(ABC):
 
     @abstractmethod
     def select_emojis(self) -> List[Emoji]:
+        pass
+
+    @abstractmethod
+    def select_configs(self) -> Configs:
         pass
 
 

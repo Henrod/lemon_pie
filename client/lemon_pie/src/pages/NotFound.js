@@ -25,7 +25,7 @@ const NotFound = () => {
       <TopBar />
       <Box>
         <Typography variant="h3" align="center">
-          404 - Page Not Found 😞
+          404 - Page Not Found
         </Typography>
         <img src={notFound} alt="not found" className={classes.image} />
         <LinkButton

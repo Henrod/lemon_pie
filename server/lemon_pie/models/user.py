@@ -11,15 +11,16 @@ class User(UserMixin):
     id: str = ""
     name: str = ""
     email: str = ""
+    is_admin: bool = False
     create_time: Optional[datetime] = None
     update_time: Optional[datetime] = None
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return (
             type(other) == User
             and self.key == other.key
             and super().__eq__(other)
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.key)

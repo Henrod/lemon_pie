@@ -26,7 +26,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def init(env: str, end_vote_time: time):
+def init(env: str, end_vote_time: time) -> None:
     login_utils.init(env)
     vote.init(end_vote_time)
 
@@ -46,7 +46,7 @@ def init(env: str, end_vote_time: time):
 @login_manager.user_loader
 def load_user(user_id: str) -> Optional[User]:
     storage = get_storage()
-    return storage.select_user(user_id)
+    return storage.select_user(user_id=user_id)
 
 
 @app.route("/", defaults={"path": ""})

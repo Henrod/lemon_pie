@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     key TEXT NOT NULL,
     email TEXT,
     name TEXT NOT NULL,
+    is_admin BOOL NOT NULL,
     create_time TIMESTAMP NOT NULL,
     update_time TIMESTAMP NOT NULL
 );
@@ -23,4 +24,8 @@ CREATE TABLE IF NOT EXISTS emojis (
     value TEXT NOT NULL UNIQUE,
     create_time TIMESTAMP NOT NULL,
     update_time TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS configs (
+    is_total_enabled BOOL
 );

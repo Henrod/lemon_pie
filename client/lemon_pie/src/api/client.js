@@ -3,6 +3,7 @@ const axios = require("axios");
 class Client {
   constructor(url) {
     this.url = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    console.log(`henrod ${process.env.REACT_APP_API_USERNAME}`);
     const auth =
       process.env.REACT_APP_ENVIRONMENT === "production"
         ? {}
@@ -26,6 +27,14 @@ class Client {
 
   async getUserVotes(user) {
     return await this.instance.get(`users/${user}/votes`);
+  }
+
+  async getTotalVotes() {
+    return await this.instance.get("total?fields=votes");
+  }
+
+  async getIsTotalEnabled() {
+    return await this.instance.get("total");
   }
 
   async getValidEmojis() {

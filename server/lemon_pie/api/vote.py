@@ -27,7 +27,37 @@ def get_votes(current_user: Callable) -> Dict:
     storage = get_storage()
     logger = logging.getLogger(__name__)
     logger.info(f"getting votes for {current_user()}")
-    return controller.get_votes(storage, _end_vote_time)
+
+    return controller.get_votes(
+        storage=storage,
+        end_vote_time=_end_vote_time,
+    )
+
+
+@app.route('/total')
+@login_required
+def get_total(current_user: Callable) -> Dict:
+    storage = get_storage()
+    logger = logging.getLogger(__name__)
+    logger.info(f"getting votes for {current_user()}")
+
+    fields = request.args.get("fields", default="").split(",")
+    should_votes = "votes" in fields
+
+    is_total_enabled = controller.is_total_enabled(storage, current_user())
+
+    total_votes: Dict = {}
+    if should_votes and is_total_enabled:
+        total_votes = controller.get_votes(
+            storage=storage,
+            end_vote_time=_end_vote_time,
+            should_total=True,
+        )
+
+    return {
+        "is_enabled": is_total_enabled,
+        "total": total_votes,
+    }
 
 
 @app.route('/users/<user>/votes')
@@ -36,7 +66,11 @@ def get_user_votes(user: str, current_user: Callable) -> Dict[str, AggVote]:
     storage = get_storage()
     logger = logging.getLogger(__name__)
     logger.info(f"getting votes for {current_user()}")
-    return controller.get_votes(storage, _end_vote_time, user)
+    return controller.get_votes(
+        storage=storage,
+        end_vote_time=_end_vote_time,
+        src_key=user,
+    )
 
 
 @app.route('/votes', methods=["PUT"])

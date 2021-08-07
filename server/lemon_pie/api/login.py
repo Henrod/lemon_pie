@@ -11,7 +11,7 @@ from .error import ErrorResponse, error_response
 
 app = Blueprint('login', __name__, url_prefix="/api")
 
-GOOGLE_CLIENT_ID = os.environ["GOOGLE_CLIENT_ID"]
+GOOGLE_CLIENT_ID = os.environ["LEMON_PIE_GOOGLE_CLIENT_ID"]
 
 
 @app.route('/login/callback', methods=["POST"])
