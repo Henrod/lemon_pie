@@ -4,7 +4,7 @@ venv:
 
 .PHONY: dev/run
 dev/run:
-	python app.py \
+	LEMON_PIE_PASSWORD=admin python app.py \
 	--env development \
 	--debug true \
 	--end_vote_time 23:59
@@ -32,7 +32,7 @@ lint:
 	mypy --ignore-missing-imports --disallow-untyped-defs .
 
 
-.PHONY: prod/build
-prod/build:
-	cd ../client/lemon_pie && npm run build
-	cp -r ../client/lemon_pie/build lemon_pie
+.PHONY: docker/build
+docker/build:
+	python setup.py bdist_wheel
+	docker build -t lemon_pie -f Dockerfile .

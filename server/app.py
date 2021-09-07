@@ -2,6 +2,8 @@ import argparse
 import logging
 from datetime import datetime
 
+from waitress import serve
+
 from lemon_pie import api, logger
 from lemon_pie.constants import DEVELOPMENT, PRODUCTION
 from lemon_pie.storage import storage
@@ -16,6 +18,7 @@ def arguments() -> argparse.Namespace:
                         choices=[PRODUCTION, DEVELOPMENT])
     parser.add_argument('--end_vote_time', default="15:00", type=str)
     parser.add_argument('--debug', default=False)
+    parser.add_argument('--port', default=8080, type=int)
     return parser.parse_args()
 
 
@@ -31,4 +34,18 @@ if __name__ == '__main__':
     )
 
     ssl_context = (args.cert, args.key) if args.cert and args.key else None
-    api.app.run(debug=args.debug, host='0.0.0.0', ssl_context=ssl_context)
+
+    if args.env == PRODUCTION:
+        serve(
+            api.app,
+            host="0.0.0.0",
+            port=args.port,
+        )
+
+    else:
+        api.app.run(
+            debug=args.debug,
+            host='0.0.0.0',
+            port=args.port,
+            ssl_context=ssl_context,
+        )

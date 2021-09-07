@@ -13,7 +13,7 @@ from psycopg2.extensions import cursor as pgcursor
 from psycopg2.extras import LoggingConnection
 
 _DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
+    "LEMON_PIE_DATABASE_URL",
     "postgresql://admin:admin@localhost:5432/lemon_pie")
 
 

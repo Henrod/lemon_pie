@@ -8,5 +8,43 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
       POSTGRES_DB: lemon_pie
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+
+  api:
+    container_name: api
+    image: lemon_pie
+    command: >
+      --env=development
+      --end_vote_time=23:59
+      --port=80
+    environment:
+      LEMON_PIE_PASSWORD: admin
+      LEMON_PIE_CORS_ORIGINS: ${LEMON_PIE_CORS_ORIGINS:-http://localhost:3000}
+      LEMON_PIE_SECRET_KEY: ${LEMON_PIE_SECRET_KEY:-secret}
+      LEMON_PIE_UI_URL: ${LEMON_PIE_UI_URL:-http://localhost:3000}
+      LEMON_PIE_GOOGLE_CLIENT_ID: ${LEMON_PIE_GOOGLE_CLIENT_ID}
+      LEMON_PIE_DATABASE_URL: ${LEMON_PIE_DATABASE_URL-postgresql://admin:admin@postgres:5432/lemon_pie}
+    ports:
+      - 5000:80
+    depends_on:
+      - postgres
+
+  setup:
+    container_name: setup
+    image: lemon_pie_setup
+    environment:
+      LEMON_PIE_DATABASE_URL: postgresql://admin:admin@postgres:5432/lemon_pie
+      LEMON_PIE_API_URL: http://api:80
+      LEMON_PIE_API_USERNAME: admin
+      LEMON_PIE_API_PASSWORD: admin
+    depends_on:
+      - postgres
+      - api
+
+volumes:
+  pgdata:
+    external: true

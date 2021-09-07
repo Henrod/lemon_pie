@@ -2,12 +2,13 @@ import os
 from datetime import time
 from typing import Optional
 
-from flask import Flask, render_template
+from flask import Flask, redirect
 from flask_cors import CORS
 from flask_login import LoginManager
 from lemon_pie import constants
 from lemon_pie.models import User
 from lemon_pie.storage.storage import get_storage
+from werkzeug.sansio.response import Response
 
 from . import emoji, login, login_utils, user, vote
 
@@ -51,5 +52,6 @@ def load_user(user_id: str) -> Optional[User]:
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
-def get_ui(path: str) -> str:
-    return render_template("index.html")
+def get_ui(path: str) -> Response:
+    ui_url = os.environ["LEMON_PIE_UI_URL"]
+    return redirect(ui_url)
