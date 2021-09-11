@@ -33,17 +33,13 @@ services:
     depends_on:
       - postgres
 
-  setup:
-    container_name: setup
-    image: lemon_pie_setup
-    environment:
-      LEMON_PIE_DATABASE_URL: postgresql://admin:admin@postgres:5432/lemon_pie
-      LEMON_PIE_API_URL: http://api:80
-      LEMON_PIE_API_USERNAME: admin
-      LEMON_PIE_API_PASSWORD: admin
-    depends_on:
-      - postgres
-      - api
+  nginx:
+    container_name: nginx
+    image: nginx:1.21
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
 
 volumes:
   pgdata:

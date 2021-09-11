@@ -9,14 +9,6 @@ dev/run:
 	--debug true \
 	--end_vote_time 23:59
 
-.PHONY: prod/run
-prod/run:
-	python app.py \
-	--env production \
-	--cert ../.cert/localhost.crt \
-	--key ../.cert/localhost.key \
-	--debug true
-
 .PHONY: db/start
 db/start:
 	docker compose up -d

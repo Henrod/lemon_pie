@@ -113,7 +113,7 @@ class PostgresStorage(Storage):
         user_id: str = None,
         user_email: str = None,
         user_key: str = None,
-    ) -> Optional[User]:
+    ) -> User:
         cur.execute(
             """
             SELECT id, key, name, email, is_admin
@@ -123,7 +123,7 @@ class PostgresStorage(Storage):
             (user_id, user_email, user_key)
         )
         (id, key, name, email, is_admin) = cur.fetchone()
-        return id and User(
+        return User(
             id=id,
             key=key,
             name=name,

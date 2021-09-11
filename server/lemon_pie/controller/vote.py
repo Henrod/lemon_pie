@@ -154,7 +154,7 @@ def is_total_enabled(
         return True
 
     user = storage.select_user(user_key=user_key)
-    if user and user.is_admin:
+    if user.key and user.is_admin:
         return True
 
     return False

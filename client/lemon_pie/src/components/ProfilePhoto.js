@@ -14,7 +14,7 @@ const REACT_APP_OBJECT_STORAGE_URL = process.env.REACT_APP_OBJECT_STORAGE_URL;
 
 const ProfilePhoto = ({ user }) => {
   const classes = useStyles();
-  const photoURL = `${REACT_APP_OBJECT_STORAGE_URL}/${user.key}.jpg`;
+  const photoURL = `${REACT_APP_OBJECT_STORAGE_URL}/photos/${user.key}.jpg`;
   return <img src={photoURL} alt="profile" className={classes.photo} />;
 };
 

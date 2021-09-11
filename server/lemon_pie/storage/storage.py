@@ -32,7 +32,7 @@ class Storage(ABC):
         user_id: str = None,
         user_email: str = None,
         user_key: str = None,
-    ) -> Optional[User]:
+    ) -> User:
         pass
 
     @abstractmethod

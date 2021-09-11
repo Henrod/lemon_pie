@@ -1,3 +1,5 @@
+import logging
+
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from lemon_pie.models.user import User
@@ -19,7 +21,7 @@ def login(
     user_surname = idinfo["family_name"]
 
     user = storage.select_user(user_email=user_email)
-    if user is None:
+    if user.email is None:
         raise ValueError(f"""user not found in storage:
         id={user_id}, name={user_name}, email={user_email}""")
 

@@ -26,7 +26,7 @@ def login() -> Union[Dict[str, str], ErrorResponse]:
     try:
         user = controller.login(storage, token, GOOGLE_CLIENT_ID)
     except ValueError as e:
-        logger.warning('failed to login:', str(e))
+        logger.warning(f'failed to login: {str(e)}')
         return error_response("user not registared in storage", 403)
 
     login_user(user)
