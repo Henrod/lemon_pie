@@ -20,6 +20,7 @@ flake8 = "~=3.9"
 mypy = "~=0.910"
 autopep8 = "~=1.5"
 wheel = "~=0.37"
+requests = "*"
 
 [requires]
 python_version = "3.7"

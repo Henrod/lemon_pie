@@ -93,7 +93,12 @@ def put_vote(
             raise ValueError("invalid request body")
 
         vote_dict["src"] = {"key": current_user()}
-        response = controller.put_vote(storage, _end_vote_time, vote_dict)
+        response = controller.put_vote(
+            storage,
+            _start_vote_time,
+            _end_vote_time,
+            vote_dict,
+        )
     except (BadRequest, ValueError) as e:
         return error_response(str(e), 400)
 
