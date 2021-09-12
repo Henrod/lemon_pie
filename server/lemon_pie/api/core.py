@@ -2,13 +2,12 @@ import os
 from datetime import time
 from typing import Optional
 
-from flask import Flask, redirect
+from flask import Flask, session
 from flask_cors import CORS
 from flask_login import LoginManager
 from lemon_pie import constants
 from lemon_pie.models import User
 from lemon_pie.storage.storage import get_storage
-from werkzeug.sansio.response import Response
 
 from . import emoji, login, login_utils, user, vote
 
@@ -27,9 +26,14 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-def init(env: str, end_vote_time: time) -> None:
+@app.before_request
+def make_session_permanent() -> None:
+    session.permanent = True
+
+
+def init(env: str, start_vote_time: time, end_vote_time: time) -> None:
     login_utils.init(env)
-    vote.init(end_vote_time)
+    vote.init(start_vote_time, end_vote_time)
 
     if env == constants.PRODUCTION:
         origins = os.environ["LEMON_PIE_CORS_ORIGINS"].split(",")
@@ -48,10 +52,3 @@ def init(env: str, end_vote_time: time) -> None:
 def load_user(user_id: str) -> Optional[User]:
     user = get_storage().select_user(user_id=user_id)
     return user if user.id else None
-
-
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def get_ui(path: str) -> Response:
-    ui_url = os.environ["LEMON_PIE_UI_URL"]
-    return redirect(ui_url)

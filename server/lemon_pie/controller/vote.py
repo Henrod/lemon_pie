@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 from typing import Dict, List, Optional, Set, Tuple
 
 from lemon_pie.models.user import User
@@ -11,8 +11,13 @@ from lemon_pie.storage.storage import Storage
 from .dataclasses import AggVote, Votes
 
 
-def can_vote(end_vote_time: time) -> bool:
-    return datetime.now().time() < end_vote_time
+def _get_today() -> date:
+    # TODO: use timezone better
+    return (datetime.now() - timedelta(hours=3)).date()
+
+
+def can_vote(start_vote_time: time, end_vote_time: time) -> bool:
+    return start_vote_time < datetime.now().time() < end_vote_time
 
 
 def _valid_users(
@@ -56,6 +61,7 @@ def _get_agg_votes(
 
 def get_votes(
     storage: Storage,
+    start_vote_time: time,
     end_vote_time: time,
     should_total: bool = False,
     src_key: str = None,
@@ -69,7 +75,7 @@ def get_votes(
         start_date = min(d for d in votes.keys())
         end_date = max(d for d in votes.keys())
     else:
-        today = date.today()
+        today = _get_today()
         votes = {today: storage.select_votes_date(today)}
         start_date, end_date = today, today
 
@@ -92,7 +98,7 @@ def get_votes(
         start_date=start_date,
         end_date=end_date,
         votes=total_agg_votes,
-        can_vote=can_vote(end_vote_time),
+        can_vote=can_vote(start_vote_time, end_vote_time),
     ).to_dict()
 
 
@@ -105,6 +111,7 @@ def _is_invalid(cases: List[Tuple[bool, str]]) -> Optional[str]:
 
 def put_vote(
     storage: Storage,
+    start_vote_time: time,
     end_vote_time: time,
     vote_dict: dict,
 ) -> Dict[str, AggVote]:
@@ -113,7 +120,7 @@ def put_vote(
     src_user_key = vote_dict.get("src", {}).get("key")
     dst_user_key = vote_dict.get("dst", {}).get("key")
     vote_key = vote_dict.get("key", "")
-    today = date.today()
+    today = _get_today()
 
     vote = Vote(
         src=User(key=src_user_key),
@@ -140,6 +147,7 @@ def put_vote(
 
     return get_votes(
         storage=storage,
+        start_vote_time=start_vote_time,
         end_vote_time=end_vote_time,
         src_key=vote.src,
     )

@@ -16,7 +16,8 @@ def arguments() -> argparse.Namespace:
     parser.add_argument('--key', help="key file when specifying a certificate")
     parser.add_argument('--env', default=PRODUCTION,
                         choices=[PRODUCTION, DEVELOPMENT])
-    parser.add_argument('--end_vote_time', default="15:00", type=str)
+    parser.add_argument('--start_vote_time', default="09:00", type=str)
+    parser.add_argument('--end_vote_time', default="16:00", type=str)
     parser.add_argument('--debug', default=False)
     parser.add_argument('--port', default=8080, type=int)
     return parser.parse_args()
@@ -30,7 +31,10 @@ if __name__ == '__main__':
 
     api.init(
         env=args.env,
-        end_vote_time=datetime.strptime(args.end_vote_time, "%H:%M").time(),
+        start_vote_time=datetime.strptime(
+            args.start_vote_time, "%H:%M").time(),
+        end_vote_time=datetime.strptime(
+            args.end_vote_time, "%H:%M").time(),
     )
 
     ssl_context = (args.cert, args.key) if args.cert and args.key else None

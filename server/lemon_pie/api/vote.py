@@ -14,11 +14,13 @@ from .login_utils import login_required
 app = Blueprint('votes', __name__, url_prefix="/api")
 
 _end_vote_time = time(hour=12)
+_start_vote_time = time(hour=0)
 
 
-def init(end_vote_time: time) -> None:
-    global _end_vote_time
+def init(start_vote_time: time, end_vote_time: time) -> None:
+    global _end_vote_time, _start_vote_time
     _end_vote_time = end_vote_time
+    _start_vote_time = start_vote_time
 
 
 @app.route('/votes')
@@ -30,6 +32,7 @@ def get_votes(current_user: Callable) -> Dict:
 
     return controller.get_votes(
         storage=storage,
+        start_vote_time=_start_vote_time,
         end_vote_time=_end_vote_time,
     )
 
@@ -50,6 +53,7 @@ def get_total(current_user: Callable) -> Dict:
     if should_votes and is_total_enabled:
         total_votes = controller.get_votes(
             storage=storage,
+            start_vote_time=_start_vote_time,
             end_vote_time=_end_vote_time,
             should_total=True,
         )
@@ -68,6 +72,7 @@ def get_user_votes(user: str, current_user: Callable) -> Dict[str, AggVote]:
     logger.info(f"getting votes for {current_user()}")
     return controller.get_votes(
         storage=storage,
+        start_vote_time=_start_vote_time,
         end_vote_time=_end_vote_time,
         src_key=user,
     )

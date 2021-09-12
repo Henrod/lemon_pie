@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import date
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from lemon_pie.models import Configs, Emoji, User, Vote
 

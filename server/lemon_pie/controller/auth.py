@@ -1,5 +1,3 @@
-import logging
-
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from lemon_pie.models.user import User

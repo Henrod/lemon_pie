@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from datetime import date
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, List, Tuple
 
 import psycopg2
 from lemon_pie.models import Emoji, User, Vote

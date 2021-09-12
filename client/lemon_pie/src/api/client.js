@@ -3,7 +3,6 @@ const axios = require("axios");
 class Client {
   constructor(url) {
     this.url = process.env.REACT_APP_API_URL || "http://localhost:5000";
-    console.log(`henrod ${process.env.REACT_APP_API_USERNAME}`);
     const auth =
       process.env.REACT_APP_ENVIRONMENT === "production"
         ? {}

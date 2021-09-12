@@ -9,6 +9,10 @@ dev/run:
 	--debug true \
 	--end_vote_time 23:59
 
+.PHONY: dev/deps
+dev/deps:
+	docker compose -p lemon_pie up -d
+
 .PHONY: db/start
 db/start:
 	docker compose up -d
