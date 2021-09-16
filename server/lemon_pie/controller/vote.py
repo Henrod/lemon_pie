@@ -11,13 +11,25 @@ from lemon_pie.storage.storage import Storage
 from .dataclasses import AggVote, Votes
 
 
-def _get_today() -> date:
+def _get_today(start_vote_time: time) -> date:
+    now = datetime.utcnow()
+    today = now.date()
+
+    if now.time() < start_vote_time:
+        return today - timedelta(days=1)
+
+    return today
+
+
+def _to_timezone(t: time) -> time:
     # TODO: use timezone better
-    return (datetime.now() - timedelta(hours=3)).date()
+    tz = - timedelta(hours=3)
+    dummy_date = datetime(100, 1, 1, t.hour, t.minute, t.second)
+    return (dummy_date + tz).time()
 
 
 def can_vote(start_vote_time: time, end_vote_time: time) -> bool:
-    return start_vote_time < datetime.now().time() < end_vote_time
+    return start_vote_time < datetime.utcnow().time() < end_vote_time
 
 
 def _valid_users(
@@ -75,7 +87,7 @@ def get_votes(
         start_date = min(d for d in votes.keys())
         end_date = max(d for d in votes.keys())
     else:
-        today = _get_today()
+        today = _get_today(start_vote_time)
         votes = {today: storage.select_votes_date(today)}
         start_date, end_date = today, today
 
@@ -94,12 +106,23 @@ def get_votes(
         for user_key, user_agg_votes in agg_votes.items():
             total_agg_votes[user_key] += user_agg_votes
 
-    return Votes(
+    votes_dict = Votes(
         start_date=start_date,
         end_date=end_date,
         votes=total_agg_votes,
         can_vote=can_vote(start_vote_time, end_vote_time),
     ).to_dict()
+
+    vote_starts_at, vote_ends_at = get_vote_times(
+        start_vote_time, end_vote_time)
+
+    return {
+        **votes_dict,
+        "times": {
+            "starts_at": vote_starts_at,
+            "ends_at": vote_ends_at,
+        }
+    }
 
 
 def _is_invalid(cases: List[Tuple[bool, str]]) -> Optional[str]:
@@ -120,7 +143,7 @@ def put_vote(
     src_user_key = vote_dict.get("src", {}).get("key")
     dst_user_key = vote_dict.get("dst", {}).get("key")
     vote_key = vote_dict.get("key", "")
-    today = _get_today()
+    today = _get_today(start_vote_time)
 
     vote = Vote(
         src=User(key=src_user_key),
@@ -166,3 +189,21 @@ def is_total_enabled(
         return True
 
     return False
+
+
+def get_vote_times(
+    start_vote_time: time,
+    end_vote_time: time,
+) -> Tuple[Optional[str], Optional[str]]:
+    vote_starts_at: Optional[time] = None
+    vote_ends_at: Optional[time] = None
+
+    if can_vote(start_vote_time, end_vote_time):
+        vote_ends_at = end_vote_time
+    else:
+        vote_starts_at = start_vote_time
+
+    def to_str(t: Optional[time]) -> Optional[str]:
+        return None if t is None else _to_timezone(t).strftime("%H:%M")
+
+    return to_str(vote_starts_at), to_str(vote_ends_at)

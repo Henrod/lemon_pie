@@ -7,7 +7,8 @@ dev/run:
 	LEMON_PIE_PASSWORD=admin python app.py \
 	--env development \
 	--debug true \
-	--end_vote_time 23:59
+	--start_vote_time 09:00 \
+	--end_vote_time 16:00
 
 .PHONY: dev/deps
 dev/deps:

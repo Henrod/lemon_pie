@@ -1,6 +1,11 @@
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import "./App.css";
-import { Vote, NotFound, Summary, Login, Total } from "./pages";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Login, Summary, Total, Vote } from "./pages";
 
 function App() {
   const buildPages = (pages) => (
@@ -12,9 +17,7 @@ function App() {
               {page.page}
             </Route>
           ))}
-          <Route>
-            <NotFound />
-          </Route>
+          <Redirect to="/" />
         </Switch>
       </div>
     </Router>

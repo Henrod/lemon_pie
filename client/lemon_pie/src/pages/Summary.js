@@ -1,9 +1,15 @@
+import {
+  Box,
+  createMuiTheme,
+  Grid,
+  ThemeProvider,
+  Typography,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import Client from "../api/client";
-import { makeStyles } from "@material-ui/core/styles";
-import { TopBar, SummaryBox, LinkButton } from "../components";
-import { ThemeProvider, createMuiTheme, Grid } from "@material-ui/core";
-import { redirectComponent, loginState } from "../api/login";
+import { loginState, redirectComponent } from "../api/login";
+import { LinkButton, SummaryBox, TopBar } from "../components";
 import { translatedText } from "../translation";
 
 const theme = createMuiTheme({});
@@ -16,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
   gridItem: {
     marginTop: theme.spacing(4),
   },
+  text: {
+    marginTop: theme.spacing(4),
+  },
 }));
 
 const Summary = () => {
@@ -26,6 +35,9 @@ const Summary = () => {
     isLogged: true,
     canVote: false,
     isTotalEnabled: false,
+    voteStartsAt: null,
+    voteEndsAt: null,
+    voteDate: null,
   });
 
   useEffect(() => {
@@ -51,6 +63,9 @@ const Summary = () => {
           users: usersState,
           canVote: votes.data.can_vote,
           isTotalEnabled: total.data.is_enabled,
+          voteStartsAt: votes.data.times.starts_at,
+          voteEndsAt: votes.data.times.ends_at,
+          voteDate: votes.data.end_date,
         }));
       } catch (error) {
         console.log("failed to fetch from api", error);
@@ -65,16 +80,33 @@ const Summary = () => {
     <ThemeProvider theme={theme}>
       <TopBar />
       {redirectComponent(state)}
-      <LinkButton
-        to="/votes"
-        text={translatedText("Summary.vote")}
-        disabled={!state.canVote}
-      />
-      <LinkButton
-        to="/total"
-        text={translatedText("Summary.total")}
-        disabled={!state.isTotalEnabled}
-      />
+      <Box display="flex" alignItems="center">
+        <LinkButton
+          to="/votes"
+          text={translatedText("Summary.vote")}
+          disabled={!state.canVote}
+        />
+        <LinkButton
+          to="/total"
+          text={translatedText("Summary.total")}
+          disabled={!state.isTotalEnabled}
+        />
+        {state.voteEndsAt && (
+          <Typography variant="h5">
+            {translatedText("Summary.voteEndsAt")} {state.voteEndsAt}
+          </Typography>
+        )}
+        {state.voteStartsAt && (
+          <Typography variant="h5">
+            {translatedText("Summary.voteStartsAt")} {state.voteStartsAt}
+          </Typography>
+        )}
+      </Box>
+      {state.voteDate && (
+        <Typography className={classes.text} align="center" variant="h5">
+          {state.voteDate}
+        </Typography>
+      )}
       <Grid container className={classes.gridContainer}>
         {Object.keys(state.votes).map((user) => (
           <Grid

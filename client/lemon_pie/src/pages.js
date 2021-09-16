@@ -1,7 +1,6 @@
-import Vote from "./pages/Vote";
-import NotFound from "./pages/NotFound";
-import Summary from "./pages/Summary";
 import Login from "./pages/Login";
+import Summary from "./pages/Summary";
 import Total from "./pages/Total";
+import Vote from "./pages/Vote";
 
-export { Vote, NotFound, Summary, Login, Total };
+export { Vote, Summary, Login, Total };

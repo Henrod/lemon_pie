@@ -122,14 +122,18 @@ class PostgresStorage(Storage):
             """,
             (user_id, user_email, user_key)
         )
-        (id, key, name, email, is_admin) = cur.fetchone()
-        return User(
-            id=id,
-            key=key,
-            name=name,
-            email=email,
-            is_admin=is_admin
-        )
+        user = cur.fetchone()
+        if user is None:
+            return User(key="")
+        else:
+            (id, key, name, email, is_admin) = user
+            return User(
+                id=id,
+                key=key,
+                name=name,
+                email=email,
+                is_admin=is_admin
+            )
 
     @cursor
     def update_user(self, cur: pgcursor, user: User) -> None:

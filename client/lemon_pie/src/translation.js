@@ -15,6 +15,14 @@ const texts = {
     "pt-br": "Total",
     en: "Total",
   },
+  "Summary.voteStartsAt": {
+    "pt-br": "Votação começa às",
+    en: "Vote starts at",
+  },
+  "Summary.voteEndsAt": {
+    "pt-br": "Votação termina às",
+    en: "Vote ends at",
+  },
   "Total.summary": {
     "pt-br": "Home",
     en: "Home",
