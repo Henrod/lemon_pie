@@ -92,18 +92,18 @@ const Summary = () => {
           disabled={!state.isTotalEnabled}
         />
         {state.voteEndsAt && (
-          <Typography variant="h5">
+          <Typography variant="h4">
             {translatedText("Summary.voteEndsAt")} {state.voteEndsAt}
           </Typography>
         )}
         {state.voteStartsAt && (
-          <Typography variant="h5">
+          <Typography variant="h4">
             {translatedText("Summary.voteStartsAt")} {state.voteStartsAt}
           </Typography>
         )}
       </Box>
       {state.voteDate && (
-        <Typography className={classes.text} align="center" variant="h5">
+        <Typography className={classes.text} align="center" variant="h4">
           {state.voteDate}
         </Typography>
       )}
