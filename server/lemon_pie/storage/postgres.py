@@ -100,10 +100,14 @@ class PostgresStorage(Storage):
 
     @cursor
     def select_users(self, cur: pgcursor) -> List[User]:
-        cur.execute("SELECT key, name, email FROM users WHERE is_playing")
+        cur.execute("""
+            SELECT key, name, email, create_time
+            FROM users
+            WHERE is_playing
+        """)
         return [
-            User(key=key, name=name, email=email)
-            for (key, name, email) in cur.fetchall()
+            User(key=key, name=name, email=email, create_time=create_time)
+            for (key, name, email, create_time) in cur.fetchall()
         ]
 
     @cursor

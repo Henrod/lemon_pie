@@ -71,6 +71,19 @@ def _get_agg_votes(
     return agg_votes
 
 
+def _get_users_date(users: List[User]) -> Dict[date, List[User]]:
+    users_date: Dict[date, List[User]] = {}
+    for user in users:
+        if user.create_time is None:
+            raise RuntimeError("user.create_time must not be None")
+
+        key = user.create_time.date()
+        users_date[key] = users_date.get(key, [])
+        users_date[key].append(user)
+
+    return users_date
+
+
 def get_votes(
     storage: Storage,
     start_vote_time: time,
@@ -91,18 +104,27 @@ def get_votes(
         votes = {today: storage.select_votes_date(today)}
         start_date, end_date = today, today
 
-    users = storage.select_users()
+    users_date = _get_users_date(storage.select_users())
     total_agg_votes: Dict[str, AggVote] = {
         user.key: AggVote.new(
             User(key=user.key, name=user.name),
             is_counting=False,
-        ) for user in users if src_key != user.key
+        )
+        for users in users_date.values()
+        for user in users
+        if src_key != user.key
     }
 
-    for votes_date in votes.values():
+    for vote_date, votes_date in votes.items():
         vs = sorted(votes_date, key=lambda vote: vote.key)
-        agg_votes = _get_agg_votes(users, vs, src_key)
+        users = [
+            user
+            for create_date, users in users_date.items()
+            for user in users
+            if create_date <= vote_date
+        ]
 
+        agg_votes = _get_agg_votes(users, vs, src_key)
         for user_key, user_agg_votes in agg_votes.items():
             total_agg_votes[user_key] += user_agg_votes
 
