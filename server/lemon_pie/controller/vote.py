@@ -29,7 +29,11 @@ def _to_timezone(t: time) -> time:
 
 
 def can_vote(start_vote_time: time, end_vote_time: time) -> bool:
-    return start_vote_time < datetime.utcnow().time() < end_vote_time
+    now = datetime.utcnow().time()
+    if start_vote_time < end_vote_time:
+        return start_vote_time < now < end_vote_time
+    else:
+        return start_vote_time < now or now < end_vote_time
 
 
 def _valid_users(
