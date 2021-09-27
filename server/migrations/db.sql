@@ -28,5 +28,6 @@ CREATE TABLE IF NOT EXISTS emojis (
 );
 
 CREATE TABLE IF NOT EXISTS configs (
-    is_total_enabled BOOL
+    is_total_enabled BOOL,
+    is_vote_opened BOOL
 );

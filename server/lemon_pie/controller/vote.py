@@ -36,6 +36,10 @@ def can_vote(start_vote_time: time, end_vote_time: time) -> bool:
         return start_vote_time < now or now < end_vote_time
 
 
+def is_vote_opened(storage: Storage) -> bool:
+    return bool(storage.select_configs().is_vote_opened)
+
+
 def _valid_users(
     users: List[User],
     votes: List[Vote],
@@ -136,10 +140,14 @@ def get_votes(
         start_date=start_date,
         end_date=end_date,
         votes=total_agg_votes,
-        can_vote=can_vote(start_vote_time, end_vote_time),
+        can_vote=(
+            can_vote(start_vote_time, end_vote_time) and
+            is_vote_opened(storage)
+        ),
     ).to_dict()
 
     vote_starts_at, vote_ends_at = get_vote_times(
+        storage,
         start_vote_time, end_vote_time)
 
     return {
@@ -218,16 +226,18 @@ def is_total_enabled(
 
 
 def get_vote_times(
+    storage: Storage,
     start_vote_time: time,
     end_vote_time: time,
 ) -> Tuple[Optional[str], Optional[str]]:
     vote_starts_at: Optional[time] = None
     vote_ends_at: Optional[time] = None
 
-    if can_vote(start_vote_time, end_vote_time):
-        vote_ends_at = end_vote_time
-    else:
-        vote_starts_at = start_vote_time
+    if is_vote_opened(storage):
+        if can_vote(start_vote_time, end_vote_time):
+            vote_ends_at = end_vote_time
+        else:
+            vote_starts_at = start_vote_time
 
     def to_str(t: Optional[time]) -> Optional[str]:
         return None if t is None else _to_timezone(t).strftime("%H:%M")

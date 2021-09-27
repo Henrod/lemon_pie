@@ -189,11 +189,12 @@ class PostgresStorage(Storage):
     def select_configs(self, cur: pgcursor) -> Configs:
         cur.execute(
             """
-            SELECT is_total_enabled FROM configs
+            SELECT is_total_enabled, is_vote_opened FROM configs
             """
         )
-        (is_total_enabled,) = cur.fetchone()
+        (is_total_enabled, is_vote_opened) = cur.fetchone()
 
         return Configs(
             is_total_enabled=is_total_enabled,
+            is_vote_opened=is_vote_opened,
         )
